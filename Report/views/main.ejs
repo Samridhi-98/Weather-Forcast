@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link href="stylesheets/favicon.ico" rel="icon" type="image/x-icon">
+  <link rel="stylesheet" href="stylesheets/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Almendra&family=Lusitana:wght@700&family=Merienda+One&family=Merriweather&family=Montserrat&family=Sacramento&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>
+  <script src="https://kit.fontawesome.com/0f0e4b2731.js"></script>
+  <script>
+  window.onload = function() {
+
+  var dataPoints = [];
+
+  var options =  {
+  	animationEnabled: true,
+    exportEnabled: true,
+  	theme: "dark1",
+  	title: {
+  		text: "Weekly Weather Forcast"
+  	},
+  	axisX: {
+  		valueFormatString: "DD MMM YYYY",
+  	},
+  	axisY: {
+  		title: "Temperature",
+      suffix: "K",
+  		titleFontSize: 24,
+  		includeZero: false
+  	},
+  	data: [{
+  		type: "spline",
+  		yValueFormatString: "#,###.##K",
+  		dataPoints: dataPoints
+  	}]
+  };
+
+  let api = 'https://api.openweathermap.org/data/2.5/forecast?q=Delhi&appid=7293d36ef861c22b6af25c4e9dfb4a38';
+  fetch(api)
+     .then(function (response) {
+       let data = response.json();
+       return data;
+     })
+     .then(function(data) {
+       console.log(data);
+      var temp =[];
+      for(var i=0; i<data.list.length; i++){
+        var tempElement = {};
+        tempElement.x = data.list[i].main.temp_min,
+        tempElement.y = data.list[i].main.temp_max,
+        temp.push(tempElement);
+      }
+
+     	for (var i = 0; i < data.list.length; i++) {
+     		dataPoints.push({
+     			x: new Date(data.list[i].dt_txt),
+          y: data.list[i].main.temp
+     		});
+     	}
+     	$("#chartContainer").CanvasJSChart(options);
+     })
+     .catch(function (error) {
+        console.log(error);
+     });
+  }
+  </script>
+  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+  <title>Weather Forcast</title>
+</head>
+<body>
+  <div id="header"><h1>Weathering with You</h1></div>
+  <div id="top-part">
+    <form action="/" method="POST">
+      <input class="border-color form-control" type="text" name="cityName" placeholder="City Name" required></input>
+      <span class="button">
+        <button type="button" class="btn search-cities__lnk current-location" onclick="getLocation()">
+          <i class="fa fa-location-arrow" aria-hidden="true"></i> Current location</button>
+        <button class="btn btn-secondary search_btn" type="submit">
+          <i class="fa fa-question-circle" aria-hidden="true"></i> Search</button>
+      </span>
+    </form>
+  </div>
+  <div class="">
+    <div class="inner-container">
+      <div id="chartContainer" class="chart" style="height: 400px; width:600px; border-radius:20px;"></div>
+      <div class="right-container">
+        <div class="app-title">
+          <p><strong>Weather</strong></p>
+        </div>
+        <div class="notification"> </div>
+        <div class="weather-container">
+          <div class="weather-icon">
+            <img src=<%=weather.imageURL %>>
+          </div>
+          <div class="temperature-value">
+            <p>
+              <%= weather.temp %>°<span>C</span>
+            </p>
+          </div>
+          <div class="temperature-description">
+            <p>
+              <%= weather.weatherDescription %>
+            </p>
+          </div>
+          <div class="location">
+            <p>
+              <%= weather.location %><span>, <%= weather.country %></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Made with 🧡 by GoGo</p>
+    </div>
+  </div>
+
+  <ul class="slideshow">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+<script type="text/javascript" src="location.js"></script>
+</body>
+</html>
